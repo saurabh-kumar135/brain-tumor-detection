@@ -11,6 +11,11 @@ ml-model/__pycache__/
 *.pyd
 .Python
 
+# ML Model files (too large for GitHub)
+ml-model/models/*.h5
+ml-model/models/*.keras
+ml-model/models/*.pkl
+
 # Environment variables
 .env
 backend/.env
