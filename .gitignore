@@ -16,6 +16,9 @@ ml-model/models/*.h5
 ml-model/models/*.keras
 ml-model/models/*.pkl
 
+# ML Dataset (too large for GitHub)
+ml-model/data/
+
 # Environment variables
 .env
 backend/.env
