@@ -40,7 +40,6 @@ const hospitalSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Hash password before saving
 hospitalSchema.pre('save', async function() {
     if (!this.isModified('password')) return;
     
@@ -48,12 +47,10 @@ hospitalSchema.pre('save', async function() {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Method to compare passwords
 hospitalSchema.methods.comparePassword = async function(candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Remove password from JSON output
 hospitalSchema.methods.toJSON = function() {
     const hospital = this.toObject();
     delete hospital.password;

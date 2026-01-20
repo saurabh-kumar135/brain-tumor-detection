@@ -2,12 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Hospital = require('../models/Hospital');
 
-// Signup route
 router.post('/signup', async (req, res) => {
     try {
         const { hospitalName, email, password, licenseNumber, address, phone } = req.body;
 
-        // Check if hospital already exists
         const existingHospital = await Hospital.findOne({ 
             $or: [{ email }, { licenseNumber }] 
         });
@@ -19,7 +17,6 @@ router.post('/signup', async (req, res) => {
             });
         }
 
-        // Create new hospital
         const hospital = new Hospital({
             hospitalName,
             email,
@@ -46,12 +43,10 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-// Login route
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Find hospital
         const hospital = await Hospital.findOne({ email });
         if (!hospital) {
             return res.status(401).json({ 
@@ -60,7 +55,6 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        // Check password
         const isMatch = await hospital.comparePassword(password);
         if (!isMatch) {
             return res.status(401).json({ 
@@ -69,7 +63,6 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        // Set session
         req.session.hospitalId = hospital._id;
         req.session.hospital = hospital.toJSON();
 
@@ -88,7 +81,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Logout route
 router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -105,7 +97,6 @@ router.post('/logout', (req, res) => {
     });
 });
 
-// Check auth status
 router.get('/check', (req, res) => {
     if (req.session.hospitalId) {
         res.json({

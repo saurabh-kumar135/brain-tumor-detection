@@ -11,34 +11,30 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/brain-tumor-detection';
 
 mongoose.connect(MONGODB_URI)
     .then(() => console.log('✅ MongoDB connected successfully'))
     .catch((err) => console.error('❌ MongoDB connection error:', err));
 
-// Middleware
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }));
 app.use(express.json());
 
-// Session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET || 'brain-tumor-detection-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax'
     }
 }));
 
-// Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = 'uploads/';
@@ -55,7 +51,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const allowedTypes = /jpeg|jpg|png/;
         const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -69,11 +65,9 @@ const upload = multer({
     }
 });
 
-// Import routes and middleware
 const authRoutes = require('./routes/auth');
 const { isAuthenticated } = require('./middleware/auth');
 
-// Routes
 app.get('/', (req, res) => {
     res.json({
         message: 'Brain Tumor Detection API',
@@ -90,10 +84,8 @@ app.get('/', (req, res) => {
     });
 });
 
-// Auth routes
 app.use('/api/auth', authRoutes);
 
-// Prediction endpoint (protected)
 app.post('/api/predict', isAuthenticated, upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
@@ -103,7 +95,6 @@ app.post('/api/predict', isAuthenticated, upload.single('image'), async (req, re
         const imagePath = path.resolve(req.file.path);
         const pythonScriptPath = path.resolve('../ml-model/predict.py');
 
-        // Call Python prediction script with virtual environment
         const pythonPath = path.resolve('../ml-model/venv/bin/python3');
         const python = spawn(pythonPath, [pythonScriptPath, imagePath]);
 
@@ -119,7 +110,6 @@ app.post('/api/predict', isAuthenticated, upload.single('image'), async (req, re
         });
 
         python.on('close', (code) => {
-            // Clean up uploaded file
             fs.unlink(imagePath, (err) => {
                 if (err) console.error('Error deleting file:', err);
             });
@@ -161,7 +151,6 @@ app.post('/api/predict', isAuthenticated, upload.single('image'), async (req, re
     }
 });
 
-// Error handling middleware
 app.use((error, req, res, next) => {
     if (error instanceof multer.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
@@ -171,7 +160,6 @@ app.use((error, req, res, next) => {
     res.status(500).json({ error: error.message });
 });
 
-// Start server
 app.listen(PORT, () => {
     console.log(`🚀 Brain Tumor Detection API running on port ${PORT}`);
     console.log(`📍 http://localhost:${PORT}`);
