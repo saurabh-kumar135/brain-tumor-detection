@@ -7,5 +7,5 @@ NODE_ENV=development
 PYTHON_PATH=python
 ML_MODEL_PATH=../ml-model/models/brain_tumor_model.h5
 ENVEOF
-echo "✅ .env file updated successfully!"
-echo "⚠️  Remember to update MONGODB_URI and SESSION_SECRET with your actual values!"
+echo ".env file updated successfully!"
+echo "Remember to update MONGODB_URI and SESSION_SECRET with your actual values!"

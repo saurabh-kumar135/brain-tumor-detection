@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 3001;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/brain-tumor-detection';
 
 mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ MongoDB connected successfully'))
-    .catch((err) => console.error('❌ MongoDB connection error:', err));
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch((err) => console.error('MongoDB connection error:', err));
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -161,6 +161,6 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Brain Tumor Detection API running on port ${PORT}`);
-    console.log(`📍 http://localhost:${PORT}`);
+    console.log(`Brain Tumor Detection API running on port ${PORT}`);
+    console.log(`http://localhost:${PORT}`);
 });
