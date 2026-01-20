@@ -1,0 +1,7 @@
+{
+  "ignore": [
+    "../ml-model/**",
+    "node_modules/**",
+    "../.git/**"
+  ]
+}

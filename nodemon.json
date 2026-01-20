@@ -1,0 +1,14 @@
+{
+  "ignore": [
+    "ml-model/venv/**",
+    "node_modules/**",
+    ".git/**"
+  ],
+  "watch": [
+    "*.js",
+    "routes/**",
+    "models/**",
+    "controllers/**",
+    "middleware/**"
+  ]
+}
